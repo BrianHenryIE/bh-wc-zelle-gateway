@@ -1,0 +1,36 @@
+paths:
+    tests: tests
+    output: tests/_output
+    data: tests/_data
+    support: tests/_support
+    envs: tests/_envs
+actor_suffix: Tester
+extensions:
+    enabled:
+        - Codeception\Extension\RunFailed
+    commands:
+        - Codeception\Command\GenerateWPUnit
+params:
+    - .env.testing
+coverage:
+    enabled: true
+    include:
+        - /src/*
+        - /bh-wc-zelle-gateway.php
+        - /uninstall.php
+#        - /templates/*
+    exclude:
+        - /vendor/*
+        - /dist-archive/*
+        - /tests/*
+        - /scratch/*
+        - /wordpress/*
+        - /vendor-prefixed/*
+        - /*/interface-*.*
+        - /*/index.php
+        - /*/*.txt
+        - autoload.php
+        - autoload-classmap.php
+        - /*/*.css
+        - /*/*.js
+bootstrap: bootstrap.php

@@ -1,0 +1,17 @@
+/.*
+/.github/*
+/README.md
+/codeception.dist.yml
+/composer.json
+/composer.lock
+/dist-archive
+/phpcs.xml
+/phpstan.neon
+/phpstanbootstrap.php
+/scratch
+/tests
+/vendor
+/wordpress
+/wp-cli.yml
+/wp-content
+node_modules

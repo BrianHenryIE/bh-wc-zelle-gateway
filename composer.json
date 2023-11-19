@@ -1,0 +1,230 @@
+{
+  "name": "brianhenryie/bh-wc-zelle-gateway",
+  "description": "Accept Zelle payments on your WooCommerce store. Reconciles payments using email receipts.",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0+-or-later",
+  "authors": [
+    {
+      "name": "Brian Henry",
+      "email": "BrianHenryIE@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "allow-plugins": {
+      "cweagans/composer-patches": true,
+      "composer/installers": true,
+      "phpstan/extension-installer": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "johnpbloch/wordpress-core-installer": true
+    },
+    "platform": {
+      "php": "8.0"
+    },
+    "process-timeout": 0,
+    "sort-packages": true
+  },
+  "repositories":{
+    "brianhenryie/bh-wc-logger": {
+      "url": "../bh-wc-logger",
+      "type": "path"
+    },
+    "brianhenryie/bh-wp-logger": {
+      "url": "../bh-wp-logger",
+      "type": "path"
+    },
+    "brianhenryie/bh-wp-private-uploads": {
+      "type": "path",
+      "url": "../bh-wp-private-uploads"
+    },
+    "brianhenryie/composer-phpstorm": {
+      "url": "https://github.com/BrianHenryIE/composer-phpstorm",
+      "type": "git"
+    },
+    "outlandishideas/wpackagist": {
+      "type": "composer",
+      "url": "https://wpackagist.org"
+    },
+    "wordpress/wordpress": {
+      "url": "https://github.com/WordPress/wordpress-develop",
+      "type": "git"
+    },
+    "brianhenryie/bh-wc-order-email-reconcile":{
+      "type": "path",
+      "url":  "../bh-wc-order-email-reconcile/"
+    },
+    "brianhenryie/bh-wp-mailboxes":{
+      "type": "path",
+      "url":  "../bh-wp-mailboxes/"
+    },
+    "brianhenryie/bh-wp-plugin-meta-kit":{
+      "type": "path",
+      "url":  "../bh-wp-plugin-meta-kit/"
+    }
+  },
+  "require": {
+    "php": ">=8.0",
+    "alleyinteractive/wordpress-autoloader": "^1.1",
+    "brianhenryie/bh-wp-logger": "dev-master",
+    "brianhenryie/bh-wc-order-email-reconcile": "dev-master",
+    "brianhenryie/bh-wp-plugin-meta-kit": "dev-main",
+    "chillerlan/php-qrcode": "^4.3",
+    "lucatume/di52": "^3.3"
+  },
+  "require-dev": {
+    "10up/wp_mock": "^1.0",
+    "antecedent/patchwork": "^2.1",
+    "brianhenryie/color-logger": "^1.0",
+    "brianhenryie/composer-phpstorm": "dev-master",
+    "brianhenryie/strauss": "*",
+    "cweagans/composer-patches": "^1.7",
+    "dealerdirect/phpcodesniffer-composer-installer": "*",
+    "jaschilz/php-coverage-badger": "^2.0",
+    "johnpbloch/wordpress": "*",
+    "kporras07/composer-symlinks": "dev-master",
+    "lucatume/wp-browser": "^4.0",
+    "php-stubs/woocommerce-stubs": "*",
+    "phpcompatibility/phpcompatibility-wp": "^2.1",
+    "phpstan/extension-installer": "^1.1",
+    "phpunit/phpcov": "*",
+    "szepeviktor/phpstan-wordpress": "*",
+    "woocommerce/woocommerce-sniffs": "*",
+    "wordpress/wordpress": "*",
+    "wp-cli/dist-archive-command": "dev-main",
+    "wp-cli/i18n-command": "^2.4",
+    "wp-cli/wp-cli-bundle": "2.7.1",
+    "wp-coding-standards/wpcs": "*",
+    "wpackagist-plugin/woocommerce": "*",
+    "wpackagist-plugin/wp-mail-logging": "^1.10",
+    "wpackagist-theme/storefront": "*"
+  },
+  "extra": {
+    "patches": {
+      "jaschilz/php-coverage-badger": {
+        "Allow customising the text": "https://github.com/JASchilz/PHPCoverageBadge/pull/1.patch"
+      },
+      "wp-cli/dist-archive-command": {
+        "Add Increment Version": "https://github.com/BrianHenryIE/dist-archive-command/commit/f37c375ba8069c9160d642dd0c00435e0f1c4804.patch"
+      }
+    },
+    "strauss": {
+      "namespace_prefix": "BrianHenryIE\\WC_Zelle_Gateway\\",
+      "classmap_prefix": "BH_WC_Zelle_Gateway_",
+      "exclude_from_copy": {
+        "file_patterns": [
+          "~psr/log/Psr/Log/Test.*~"
+        ]
+      },
+      "namespace_replacement_patterns": {
+        "~BrianHenryIE\\\\(.*)~" : "BrianHenryIE\\WC_Zelle_Gateway\\\\$1"
+      },
+      "exclude_from_prefix": {
+        "packages": [
+          "psr/log"
+        ]
+      }
+    },
+    "symlinks": {
+      "wp-content": "wordpress/wp-content",
+      ".": "wp-content/plugins/bh-wc-zelle-gateway"
+    },
+    "phpstorm": {
+      "exclude_folders": {
+        "folders": [
+          "vendor/php-stubs/woocommerce-stubs",
+          "vendor/wordpress/wordpress/src",
+          "vendor/wordpress/wordpress/build",
+          "wp-content/plugins/bh-wc-zelle-gateway",
+          "wordpress/wp-content"
+        ],
+        "include_folders": [
+          "vendor/wordpress/wordpress/"
+        ],
+        "composer-symlinks": false
+      }
+    },
+    "google/apiclient-services": [
+      "Gmail"
+    ],
+    "enable-patching": "true"
+  },
+  "scripts": {
+    "pre-autoload-dump": [
+      "@delete-unused-google-apis"
+    ],
+    "post-install-cmd": [
+      "@setup-wordpress",
+      "@setup-phpstorm",
+      "@prefix-php-namespaces"
+    ],
+    "post-update-cmd": [
+      "@setup-wordpress",
+      "@setup-phpstorm",
+      "@prefix-php-namespaces"
+    ],
+    "delete-unused-google-apis": [
+      "Google\\Task\\Composer::cleanup"
+    ],
+    "prefix-php-namespaces": [
+      "strauss"
+    ],
+    "setup-phpstorm": [
+      "BrianHenryIE\\ComposerPhpStorm\\ExcludeFolders::update",
+      "BrianHenryIE\\ComposerPhpStorm\\PHPUnitRunConfigurations::update",
+      "@setup-symlinks"
+    ],
+    "setup-symlinks": [
+      "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks"
+    ],
+    "setup-wordpress": [
+      "export $(grep -v '^#' .env.testing | xargs); wp config create --dbname=$TEST_SITE_DB_NAME --dbuser=$TEST_SITE_DB_USER --dbpass=$TEST_SITE_DB_PASSWORD --allow-root || true",
+      "export $(grep -v '^#' .env.testing | xargs); wp core install --url=\"localhost:8080/$PLUGIN_SLUG\" --title=\"$PLUGIN_NAME\" --admin_user=admin --admin_password=password --admin_email=admin@example.org || true; wp plugin activate $PLUGIN_SLUG || true;",
+      "wp config set WP_DEBUG true --raw; wp config set WP_DEBUG_LOG true --raw; wp config set SCRIPT_DEBUG true --raw; wp config set DISABLE_WP_CRON true --raw;",
+      "wp user create bob bob@example.org --user_pass=password || true;",
+      "wp core update --allow-root || true",
+      "mkdir -p wordpress/wp-content/uploads"
+    ],
+    "create-databases": [
+      "export $(grep -v '^#' .env.testing | xargs); [[ $(mysqld --version) =~ .*MariaDB.* ]] && mysql -e \"CREATE USER IF NOT EXISTS '\"$TEST_DB_USER\"'@'%' IDENTIFIED BY '\"$TEST_DB_PASSWORD\"';\" || mysql -e \"CREATE USER IF NOT EXISTS '\"$TEST_DB_USER\"'@'%' IDENTIFIED WITH mysql_native_password BY '\"$TEST_DB_PASSWORD\"';\";",
+      "export $(grep -v '^#' .env.testing | xargs); mysql -e \"CREATE DATABASE IF NOT EXISTS \"$TEST_SITE_DB_NAME\"; USE \"$TEST_SITE_DB_NAME\"; GRANT ALL PRIVILEGES ON \"$TEST_SITE_DB_NAME\".* TO '\"$TEST_DB_USER\"'@'%';\";",
+      "export $(grep -v '^#' .env.testing | xargs); mysql -e \"CREATE DATABASE IF NOT EXISTS \"$TEST_DB_NAME\"; USE \"$TEST_DB_NAME\"; GRANT ALL PRIVILEGES ON \"$TEST_DB_NAME\".* TO '\"$TEST_DB_USER\"'@'%';\";",
+      "@restore-acceptance-database"
+    ],
+    "delete-databases": [
+      "export $(grep -v '^#' .env.testing | xargs); mysql -e \"DROP TABLE IF EXISTS $TEST_SITE_DB_NAME;\" mysql -e \"DROP TABLE IF EXISTS $TEST_DB_NAME;\"",
+      "export $(grep -v '^#' .env.testing | xargs); DB_DIR=$(mysql -e \"select @@datadir\" -N -B); rm -rf $DB_DIR$TEST_SITE_DB_NAME; rm -rf  $DB_DIR$TEST_DB_NAME;",
+      "mysql -e \"FLUSH TABLES;\""
+    ],
+    "save-acceptance-database": [
+      "export $(grep -v '^#' .env.testing | xargs); mysqldump -u $TEST_SITE_DB_USER -p$TEST_SITE_DB_PASSWORD  $TEST_SITE_DB_NAME > tests/_data/dump.sql;"
+    ],
+    "restore-acceptance-database": [
+      "export $(grep -v '^#' .env.testing | xargs); mysql $TEST_SITE_DB_NAME < tests/_data/dump.sql"
+    ],
+    "test-coverage": [
+      "codecept run unit --coverage unit.cov",
+      "codecept run wpunit --coverage wpunit.cov",
+      "phpcov merge --clover tests/_output/clover.xml --html tests/_output/html tests/_output;",
+      "open tests/_output/html/index.html"
+    ],
+    "cs": [
+      "phpcs || true",
+      "phpstan analyse --memory-limit 2G"
+    ],
+    "cs-fix": [
+      "phpcbf || true",
+      "@cs"
+    ],
+    "lint-changes": [
+      "updated_files=$( git status | grep 'modified:\\s.*.php$' | cut -c14- | awk '{ printf(\"%s \", $0) }' ); phpcbf $(echo $updated_files); phpcs $(echo $updated_files); phpstan analyse $(echo $updated_files) --memory-limit 2G"
+    ],
+    "create-plugin-archive": [
+      "wp i18n make-pot src languages/$(basename \"$PWD\").pot --domain=$(basename \"$PWD\")",
+      "wp dist-archive . ./dist-archive --plugin-dirname=$(basename \"$PWD\") --create-target-dir"
+    ],
+    "github-actions":  [
+      "act -P ubuntu-latest=shivammathur/node:latest"
+    ]
+  }
+}
