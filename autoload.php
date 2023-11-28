@@ -40,5 +40,5 @@ require_once __DIR__ . '/vendor-prefixed/autoload.php';
 
 Autoloader::generate(
 	'BrianHenryIE\WC_Zelle_Gateway',
-	__DIR__ . '/src',
+	__DIR__ . '/includes',
 )->register();
