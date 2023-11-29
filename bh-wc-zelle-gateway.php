@@ -27,9 +27,11 @@
 
 namespace BrianHenryIE\WC_Zelle_Gateway;
 
+use BrianHenryIE\WC_Zelle_Gateway\Plugin_Meta_Kit\Plugin_Meta_Kit;
 use BrianHenryIE\WC_Zelle_Gateway\API\API;
 use BrianHenryIE\WC_Zelle_Gateway\API\Settings;
 use BrianHenryIE\WC_Zelle_Gateway\lucatume\DI52\Container;
+use BrianHenryIE\WC_Zelle_Gateway\Plugin_Meta_Kit\Plugin_Meta_Kit_Settings_Interface;
 use BrianHenryIE\WC_Zelle_Gateway\WC_Order_Email_Reconcile\BH_WC_Order_Email_Reconcile;
 use BrianHenryIE\WC_Zelle_Gateway\WC_Order_Email_Reconcile\Email_Reconcile_Settings_Interface;
 use BrianHenryIE\WC_Zelle_Gateway\WP_Logger\Logger;
@@ -91,3 +93,6 @@ $container->singleton(
 $app = $container->get( BH_WC_Zelle_Gateway::class );
 
 $GLOBALS['bh_wc_zelle_gateway'] = $container->get( API_Interface::class );
+$container->bind( Plugin_Meta_Kit_Settings_Interface::class, Settings::class );
+$pmk = $container->get( Plugin_Meta_Kit::class );
+$pmk->view_details_modal();

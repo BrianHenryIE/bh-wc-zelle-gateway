@@ -7,6 +7,7 @@
 
 namespace BrianHenryIE\WC_Zelle_Gateway\API;
 
+use BrianHenryIE\WC_Zelle_Gateway\Plugin_Meta_Kit\Plugin_Meta_Kit_Settings_Interface;
 use BrianHenryIE\WC_Zelle_Gateway\Settings_Interface;
 use BrianHenryIE\WC_Zelle_Gateway\WP_Logger\WooCommerce_Logger_Settings_Interface;
 use BrianHenryIE\WC_Zelle_Gateway\WP_Mailboxes\API\Ddeboer_Imap\IMAP_Credentials_Interface;
@@ -20,7 +21,11 @@ use BrianHenryIE\WC_Zelle_Gateway\WooCommerce\Zelle_Gateway;
 use WC_Payment_Gateways;
 
 
-class Settings implements Settings_Interface, WooCommerce_Logger_Settings_Interface, Email_Reconcile_Settings_Interface {
+class Settings implements Settings_Interface,
+	WooCommerce_Logger_Settings_Interface,
+	Email_Reconcile_Settings_Interface,
+	Plugin_Meta_Kit_Settings_Interface {
+
 	use BH_WP_Mailboxes_Settings_Defaults_Trait;
 
 	/**
