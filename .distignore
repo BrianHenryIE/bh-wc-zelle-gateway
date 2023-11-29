@@ -15,3 +15,7 @@
 /wp-cli.yml
 /wp-content
 node_modules
+/*.md
+/package.json
+/package-lock.json
+/src
