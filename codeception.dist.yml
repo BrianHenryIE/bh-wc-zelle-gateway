@@ -15,12 +15,14 @@ params:
 coverage:
     enabled: true
     include:
-        - /src/*
+        - /includes/*
         - /bh-wc-zelle-gateway.php
         - /uninstall.php
 #        - /templates/*
     exclude:
         - /vendor/*
+        - /node_modules/*
+        - /src/*
         - /dist-archive/*
         - /tests/*
         - /scratch/*

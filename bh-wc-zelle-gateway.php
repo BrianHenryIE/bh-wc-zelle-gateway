@@ -37,21 +37,22 @@ use BrianHenryIE\WC_Zelle_Gateway\WC_Order_Email_Reconcile\Email_Reconcile_Setti
 use BrianHenryIE\WC_Zelle_Gateway\WP_Logger\Logger;
 use BrianHenryIE\WC_Zelle_Gateway\WP_Logger\Logger_Settings_Interface;
 use BrianHenryIE\WC_Zelle_Gateway\WP_Includes\Deactivator;
-use Exception;
+use BrianHenryIE\WC_Zelle_Gateway\WP_SLSWC_Client\SLSWC_Client;
 use Throwable;
 use Psr\Log\LoggerInterface;
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
-	throw new Exception( 'WordPress not loaded' );
+	return;
 }
 
 // If the GitHub repo was installed without running `composer install` to add the dependencies, the autoload will fail.
 try {
 	require_once __DIR__ . '/autoload.php';
 } catch ( Throwable $error ) {
-	$display_download_from_releases_error_notice = function () {
-		echo '<div class="notice notice-error"><p><b>Zelle Gateway missing dependencies.</b> Please <a href="https://github.com/BrianHenryIE/bh-wc-zelle-gateway/releases">install the distribution archive from the GitHub Releases page</a>. It appears you downloaded the GitHub repo and installed that as the plugin.</p></div>';
+	// This only hides one error at a time.
+	$display_download_from_releases_error_notice = function () use ( $error ) {
+		echo '<div class="notice notice-error"><p><b>Zelle Gateway missing dependencies.</b> Please <a href="https://github.com/BrianHenryIE/bh-wc-zelle-gateway/releases">install the distribution archive from the GitHub Releases page</a>. It appears you downloaded the GitHub repo and installed that as the plugin.</p><p style="display: none">' . $error->getMessage() . '</p></div>';
 	};
 	add_action( 'admin_notices', $display_download_from_releases_error_notice );
 	return;
@@ -93,6 +94,68 @@ $container->singleton(
 $app = $container->get( BH_WC_Zelle_Gateway::class );
 
 $GLOBALS['bh_wc_zelle_gateway'] = $container->get( API_Interface::class );
+
+add_action(
+	'plugins_loaded',
+	function () use ( $container ) {
+		$settings = new \BrianHenryIE\WC_Zelle_Gateway\WP_SLSWC_Client\Settings(
+			'bh-wc-zelle-gateway/bh-wc-zelle-gateway.php',
+			'http://localhost:8080/bh-wp-autologin-urls'
+		);
+		$logger   = $container->get( LoggerInterface::class );
+
+		SLSWC_Client::get_instance( $settings, $logger );
+	}
+);
+
+/**
+ * @hooked admin_enqueue_scripts
+ */
+function example_admin_enqueue_scripts() {
+	$plugin_slug = 'bh-wc-zelle-gateway';
+
+	$script_handle = "{$plugin_slug}-licence";
+
+	// Only load the JS on the plugin information modal for this plugin.
+	global $pagenow;
+	if ( 'plugin-install.php' !== $pagenow
+		|| ! isset( $_GET['plugin'] )
+		|| sanitize_key( wp_unslash( $_GET['plugin'] ) !== $plugin_slug )
+	) {
+		return;
+	}
+
+	$asset_file = include plugin_dir_path( __FILE__ ) . 'build/index.asset.php';
+
+	wp_enqueue_script(
+		$script_handle,
+		plugins_url( 'build/index.js', __FILE__ ),
+		$asset_file['dependencies'],
+		$asset_file['version'],
+		true
+	);
+
+	$api = SLSWC_Client::get_instance();
+
+	$data = wp_json_encode(
+		array(
+			'ajaxUrl'         => admin_url( 'admin-ajax.php' ),
+			'nonce'           => wp_create_nonce( 'BrianHenryIE\WP_SLSWC_Client\Admin\AJAX' ), // TODO: use ::class.
+			'licence_details' => $api->get_licence_details(),
+		)
+	);
+
+	// `bh-wc-zelle-gateway-licence` -> `bhWcZelleGatewayLicence`;
+	$script_var_name = lcfirst( str_replace( ' ', '', ucwords( str_replace( '-', ' ', $script_handle ) ) ) );
+
+	wp_add_inline_script(
+		$script_handle,
+		"const {$script_var_name} = {$data};",
+		'before'
+	);
+}
+add_action( 'admin_enqueue_scripts', '\BrianHenryIE\WC_Zelle_Gateway\example_admin_enqueue_scripts' );
+
 $container->bind( Plugin_Meta_Kit_Settings_Interface::class, Settings::class );
 $pmk = $container->get( Plugin_Meta_Kit::class );
 $pmk->view_details_modal();
