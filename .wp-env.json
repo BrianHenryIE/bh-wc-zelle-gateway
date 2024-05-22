@@ -1,0 +1,19 @@
+{
+  "env": {
+    "development": {
+      "plugins": [
+        "."
+      ]
+    }
+  },
+  "lifecycleScripts": {
+    "afterStart": "./tests/e2e-pw/setup/initialize-external.sh"
+  },
+  "mappings": {
+    "setup": "./tests/e2e-pw/setup",
+    "wp-cli.yml": "./wp-cli.wp-env.yml",
+    "wp-content/plugins/woocommerce": "./wp-content/plugins/woocommerce",
+    "wp-content/plugins/wordpress-importer": "./wp-content/plugins/wordpress-importer"
+  },
+  "phpVersion": "8.0"
+}

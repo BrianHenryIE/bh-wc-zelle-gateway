@@ -27,7 +27,7 @@
     "process-timeout": 0,
     "sort-packages": true
   },
-  "repositories":{
+  "repositories": {
     "outlandishideas/wpackagist": {
       "type": "composer",
       "url": "https://wpackagist.org"
@@ -42,8 +42,8 @@
     "alleyinteractive/wordpress-autoloader": "^1.1",
     "brianhenryie/bh-wp-logger": "*",
     "brianhenryie/bh-wc-order-email-reconcile": "dev-master",
-    "brianhenryie/bh-wp-plugin-meta-kit": "dev-main",
-    "brianhenryie/bh-wp-slswc-client": "dev-main",
+    "brianhenryie/bh-wp-plugin-meta-kit": "dev-main|dev-master",
+    "brianhenryie/bh-wp-slswc-client": "dev-main|dev-master",
     "chillerlan/php-qrcode": "^4.3",
     "lucatume/di52": "^3.3"
   },
@@ -74,6 +74,7 @@
     "wp-cli/wp-cli-bundle": "2.7.1",
     "wp-coding-standards/wpcs": "*",
     "wpackagist-plugin/woocommerce": "*",
+    "wpackagist-plugin/wordpress-importer": "^0.8.2",
     "wpackagist-theme/storefront": "*"
   },
   "extra": {
@@ -99,7 +100,7 @@
         ]
       },
       "namespace_replacement_patterns": {
-        "~BrianHenryIE\\\\(.*)~" : "BrianHenryIE\\WC_Zelle_Gateway\\\\$1"
+        "~BrianHenryIE\\\\(.*)~": "BrianHenryIE\\WC_Zelle_Gateway\\\\$1"
       },
       "exclude_from_prefix": {
         "packages": [
@@ -136,14 +137,14 @@
       "@delete-unused-google-apis"
     ],
     "post-install-cmd": [
-      "@setup-wordpress",
       "@setup-phpstorm",
-      "@prefix-php-namespaces"
+      "@prefix-php-namespaces",
+      "@sync-composer-wpenv"
     ],
     "post-update-cmd": [
-      "@setup-wordpress",
       "@setup-phpstorm",
-      "@prefix-php-namespaces"
+      "@prefix-php-namespaces",
+      "@sync-composer-wpenv"
     ],
     "delete-unused-google-apis": [
       "Google\\Task\\Composer::cleanup"
@@ -152,20 +153,12 @@
       "strauss"
     ],
     "setup-phpstorm": [
+      "@setup-symlinks",
       "BrianHenryIE\\ComposerPhpStorm\\ExcludeFolders::update",
-      "BrianHenryIE\\ComposerPhpStorm\\PHPUnitRunConfigurations::update",
-      "@setup-symlinks"
+      "BrianHenryIE\\ComposerPhpStorm\\PHPUnitRunConfigurations::update"
     ],
     "setup-symlinks": [
       "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks"
-    ],
-    "setup-wordpress": [
-      "export $(grep -v '^#' .env.testing | xargs); wp config create --dbname=$TEST_SITE_DB_NAME --dbuser=$TEST_SITE_DB_USER --dbpass=$TEST_SITE_DB_PASSWORD --allow-root || true",
-      "export $(grep -v '^#' .env.testing | xargs); wp core install --url=\"localhost:8080/$PLUGIN_SLUG\" --title=\"$PLUGIN_NAME\" --admin_user=admin --admin_password=password --admin_email=admin@example.org || true; wp plugin activate $PLUGIN_SLUG || true;",
-      "wp config set WP_DEBUG true --raw; wp config set WP_DEBUG_LOG true --raw; wp config set SCRIPT_DEBUG true --raw; wp config set DISABLE_WP_CRON true --raw;",
-      "wp user create bob bob@example.org --user_pass=password || true;",
-      "wp core update --allow-root || true",
-      "mkdir -p wordpress/wp-content/uploads"
     ],
     "test-coverage": [
       "codecept run unit --coverage unit.cov",
@@ -188,8 +181,12 @@
       "wp i18n make-pot src languages/$(basename \"$PWD\").pot --domain=$(basename \"$PWD\")",
       "wp dist-archive . ./dist-archive --plugin-dirname=$(basename \"$PWD\") --create-target-dir"
     ],
-    "github-actions":  [
+    "github-actions": [
       "act -P ubuntu-latest=shivammathur/node:latest"
+    ],
+    "sync-composer-wpenv": [
+      "for name in $(cat .wp-env.json | jq '.mappings | values[]' | sed -r 's/^\\\"|\\\"$//g'); do [ ! -d $name ] && [ ! -f $name ] && echo $name && jq 'del(.. | select(. ==\"'$name'\"))' .wp-env.json | sponge .wp-env.json; done; exit 0;",
+      "find wp-content/plugins -type d -depth 1 ! -type l | sort -h | jq -Rn '[inputs]' | jq 'reduce .[] as $item ({}; . + {$item:$item})' | jq '.[] |= \"./\\(.)\"' | jq '. | {mappings: .}' | jq --sort-keys -s '.[] * $existing[]' --slurpfile existing .wp-env.json | sponge .wp-env.json "
     ]
   }
 }

@@ -7,52 +7,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-11-17T21:12:43+00:00\n"
+"POT-Creation-Date: 2024-05-22T15:37:02+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.9.0\n"
+"X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: bh-wc-zelle-gateway\n"
-
-#: admin/class-plugins-page.php:38
-msgid "Settings"
-msgstr ""
-
-#: admin/class-plugins-page.php:53
-msgid "Orders"
-msgstr ""
-
-#: woocommerce/class-zelle-gateway.php:80
-msgid "Enable/Disable"
-msgstr ""
-
-#: woocommerce/class-zelle-gateway.php:82
-msgid "Enable This Gateway"
-msgstr ""
-
-#: woocommerce/class-zelle-gateway.php:86
-msgid "Title"
-msgstr ""
-
-#: woocommerce/class-zelle-gateway.php:88
-msgid "This controls the title which the user sees during checkout."
-msgstr ""
-
-#: woocommerce/class-zelle-gateway.php:89
-msgctxt "Method description here"
-msgid "Zelle"
-msgstr ""
-
-#: woocommerce/class-zelle-gateway.php:93
-msgid "Description"
-msgstr ""
-
-#: woocommerce/class-zelle-gateway.php:95
-msgid "Payment method description that the customer will see on your checkout."
-msgstr ""
-
-#: woocommerce/class-zelle-gateway.php:100
-msgid "Zelle Email Address"
-msgstr ""
-
-#: woocommerce/class-zelle-gateway.php:102
-msgid "The Zelle account email address the customer will be instructed to pay."
-msgstr ""

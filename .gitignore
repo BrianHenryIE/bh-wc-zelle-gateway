@@ -63,3 +63,7 @@ vendor-prefixed
 dist-archive
 
 /build
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
